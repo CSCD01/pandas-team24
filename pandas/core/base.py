@@ -352,8 +352,21 @@ class SelectionMixin:
                         raise SpecificationError("nested renamer is not supported")
                     elif isinstance(obj, ABCSeries):
                         raise SpecificationError("nested renamer is not supported")
-                    elif isinstance(obj, ABCDataFrame) and k not in obj.columns:
-                        raise KeyError(f"Column '{k}' does not exist!")
+                    elif isinstance(obj, ABCDataFrame):
+
+                        # OWO CHANGES
+                        # Original check
+                        if (k not in obj.columns):
+                            import json
+                            # Check if list thingy
+                            try:
+                                keys = json.loads(k)
+                                for key in keys:
+                                    # Check keys
+                                    if (key not in obj.columns):
+                                        raise KeyError(f"Column '{key}' does not exist!")
+                            except ValueError:
+                                raise KeyError(f"Column '{k}' does not exist!")
 
                 arg = new_arg
 
@@ -424,11 +437,9 @@ class SelectionMixin:
 
             # no selection
             else:
-
                 try:
                     result = _agg(arg, _agg_1dim)
                 except SpecificationError:
-
                     # we are aggregating expecting all 1d-returns
                     # but we have 2d
                     result = _agg(arg, _agg_2dim)

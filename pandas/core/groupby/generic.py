@@ -908,11 +908,15 @@ class DataFrameGroupBy(GroupBy):
     )
     @Appender(_shared_docs["aggregate"])
     def aggregate(self, func=None, *args, **kwargs):
-
         relabeling = func is None and is_multi_agg_with_relabel(**kwargs)
         if relabeling:
+            # OWO CHANGES
+            import json
+            for k, v in list(kwargs.items()):
+                if (isinstance(v[0], list)):
+                    kwargs[k] = (json.dumps(v[0]),) + v[1:]
+    
             func, columns, order = normalize_keyword_aggregation(kwargs)
-
             kwargs = {}
         elif isinstance(func, list) and len(func) > len(set(func)):
 
@@ -1626,6 +1630,7 @@ class DataFrameGroupBy(GroupBy):
                 observed=self.observed,
             )
         elif ndim == 1:
+            print(self.obj, key)
             if subset is None:
                 subset = self.obj[key]
             return SeriesGroupBy(
