@@ -1617,8 +1617,6 @@ class DataFrameGroupBy(GroupBy):
         subset : object, default None
             subset to act on
         """
-        # OWO Change
-        print(key)
         if ndim == 2:
             if subset is None:
                 subset = self.obj
