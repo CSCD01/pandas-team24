@@ -391,6 +391,11 @@ class SelectionMixin:
                         "nested dictionary is ambiguous in aggregation"
                     )
                 return colg.aggregate(how)
+            
+            def _agg_1toNdim(name, selection, how):
+                print(obj)
+                colg = self._gotitem(selection, ndim=1, subset=obj)
+                return colg.aggregate(how)
 
             def _agg_2dim(name, how):
                 """
@@ -406,7 +411,13 @@ class SelectionMixin:
                 """
                 result = {}
                 for fname, agg_how in arg.items():
-                    result[fname] = func(fname, agg_how)
+                    # OWO CHANGES
+                    import json
+                    try:
+                        items = json.loads(fname)
+                        result[fname] = _agg_1toNdim(fname, items, agg_how)
+                    except ValueError:
+                        result[fname] = func(fname, agg_how)
                 return result
 
             # set the final keys

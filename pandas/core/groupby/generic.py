@@ -1617,6 +1617,8 @@ class DataFrameGroupBy(GroupBy):
         subset : object, default None
             subset to act on
         """
+        # OWO Change
+        print(key)
         if ndim == 2:
             if subset is None:
                 subset = self.obj
@@ -1630,7 +1632,6 @@ class DataFrameGroupBy(GroupBy):
                 observed=self.observed,
             )
         elif ndim == 1:
-            print(self.obj, key)
             if subset is None:
                 subset = self.obj[key]
             return SeriesGroupBy(
