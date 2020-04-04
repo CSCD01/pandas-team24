@@ -357,15 +357,14 @@ class SelectionMixin:
                         # OWO CHANGES
                         # Original check
                         if (k not in obj.columns):
-                            import json
                             # Check if list thingy
                             try:
-                                keys = json.loads(k)
+                                keys = np.frombuffer(k, dtype=np.dtype('<U1'))
                                 for key in keys:
                                     # Check keys
                                     if (key not in obj.columns):
                                         raise KeyError(f"Column '{key}' does not exist!")
-                            except ValueError:
+                            except TypeError:
                                 raise KeyError(f"Column '{k}' does not exist!")
 
                 arg = new_arg
@@ -407,14 +406,13 @@ class SelectionMixin:
                 result = {}
                 for fname, agg_how in arg.items():
                     # OWO CHANGES
-                    import json
                     try:
-                        items = json.loads(fname)
+                        items = np.frombuffer(fname, dtype=np.dtype('<U1'))
                         _obj = {}
                         for item in items:
                             _obj[item] = self._gotitem(item, ndim=1, subset=None)
                         result[fname] = agg_how[0](_obj)
-                    except ValueError:
+                    except TypeError:
                         result[fname] = func(fname, agg_how)
                 return result
 
