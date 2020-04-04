@@ -48,7 +48,6 @@ from pandas.core.dtypes.common import (
     is_object_dtype,
     is_scalar,
     needs_i8_conversion,
-    is_list_like,
 )
 from pandas.core.dtypes.missing import _isna_ndarraylike, isna, notna
 
@@ -914,7 +913,7 @@ class DataFrameGroupBy(GroupBy):
             # OWO CHANGES
             from types import LambdaType
             for k, v in list(kwargs.items()):
-                if is_list_like(v[0]) & isinstance(v[1], LambdaType):
+                if isinstance(v[0], list) & isinstance(v[1], LambdaType):
                     # v[0] is the first parameter given (the column(s) to group)
                     # v[1] is the 2nd parameter given and the opperation to be done to the column(s)
                     kwargs[k] = (np.array(v[0]).tobytes(),) + v[1:]
