@@ -680,6 +680,16 @@ must be either implemented on GroupBy or available via :ref:`dispatching
 
 .. _groupby.aggregate.cython:
 
+
+Aggregrating multiple columns
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+..ipython:: python
+
+   grouped.agg([ diff_c_d=(['C', 'D'], lambda x: x['C'].max() - x['D'].max())\n",
+
+
+
 Cython-optimized aggregation functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
