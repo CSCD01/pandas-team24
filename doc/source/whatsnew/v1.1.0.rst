@@ -432,6 +432,11 @@ Groupby/resample/rolling
 - Bug in :meth:`DataFrame.groupby` and :meth:`Series.groupby` produces inconsistent type when aggregating Boolean series (:issue:`32894`)
 - Bug in :meth:`DataFrame.resample` where an ``AmbiguousTimeError`` would be raised when the resulting timezone aware :class:`DatetimeIndex` had a DST transition at midnight (:issue:`25758`)
 
+Grouby Aggregrations
+^^^^^^^^^^^^^^^^^^^^
+
+- added functionality to perform aggregrations on multiple columns
+
 Reshaping
 ^^^^^^^^^
 

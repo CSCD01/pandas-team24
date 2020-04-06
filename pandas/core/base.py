@@ -339,8 +339,20 @@ class SelectionMixin:
                         raise SpecificationError("nested renamer is not supported")
                     elif isinstance(obj, ABCSeries):
                         raise SpecificationError("nested renamer is not supported")
-                    elif isinstance(obj, ABCDataFrame) and k not in obj.columns:
-                        raise KeyError(f"Column '{k}' does not exist!")
+                    elif isinstance(obj, ABCDataFrame):
+
+                        # OWO CHANGES
+                        # Original check
+                        if (k not in obj.columns):
+                            # Check if list thingy
+                            try:
+                                keys = np.frombuffer(k, dtype=np.dtype('<U1'))
+                                for key in keys:
+                                    # Check keys
+                                    if (key not in obj.columns):
+                                        raise KeyError(f"Column '{key}' does not exist!")
+                            except TypeError:
+                                raise KeyError(f"Column '{k}' does not exist!")
 
                 arg = new_arg
 
@@ -381,7 +393,15 @@ class SelectionMixin:
                 """
                 result = {}
                 for fname, agg_how in arg.items():
-                    result[fname] = func(fname, agg_how)
+                    # OWO CHANGES
+                    try:
+                        items = np.frombuffer(fname, dtype=np.dtype('<U1'))
+                        _obj = {}
+                        for item in items:
+                            _obj[item] = self._gotitem(item, ndim=1, subset=None)
+                        result[fname] = agg_how[0](_obj)
+                    except TypeError:
+                        result[fname] = func(fname, agg_how)
                 return result
 
             # set the final keys
@@ -412,11 +432,9 @@ class SelectionMixin:
 
             # no selection
             else:
-
                 try:
                     result = _agg(arg, _agg_1dim)
                 except SpecificationError:
-
                     # we are aggregating expecting all 1d-returns
                     # but we have 2d
                     result = _agg(arg, _agg_2dim)
